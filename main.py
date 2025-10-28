@@ -3,7 +3,31 @@ import os;
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import math
+import requests
+from dotenv import load_dotenv
+load_dotenv()
 
+api_url = "https://osu.ppy.sh/api/v2/users/melis"
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+data = {
+    "client_id": CLIENT_ID,
+    "client_secret": CLIENT_SECRET,
+    "grant_type": "client_credentials",
+    "scope": "public"
+}
+token_url = "https://osu.ppy.sh/oauth/token"
+
+response = requests.post(token_url, data=data)
+access_token = response.json()["access_token"]
+headers = {
+    "Authorization": f"Bearer {access_token}"
+}
+user_data = requests.get(api_url, headers=headers).json()
+
+print(user_data)
+input()
 os.system("cls");
 Tk().withdraw()
 t = 2
@@ -11,7 +35,6 @@ while(t > 0):
     filename = askopenfilename(defaultextension="C:\\Users\\mique\\AppData\\Local\\osu!\\Replays")
 
     osuReplaysPath = "C:\\Users\\mique\\AppData\\Local\\osu!\\Replays\\"
-
 
     replay = osrparse.Replay.from_path(filename)
 
